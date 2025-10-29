@@ -1,0 +1,65 @@
+@host = http://localhost
+@port = 5196
+
+### Obtener todas las tareas
+GET {{host}}:{{port}}/api/tareas
+
+### Obtener tarea por ID (1)
+GET {{host}}:{{port}}/api/tareas/1
+
+### Obtener tareas completadas
+GET {{host}}:{{port}}/api/tareas/estado/true
+
+### Obtener tareas pendientes
+GET {{host}}:{{port}}/api/tareas/estado/false
+
+### Crear nueva tarea
+POST {{host}}:{{port}}/api/tareas
+Content-Type: application/json
+
+{
+  "descripcion": "Nueva tarea desde .http",
+  "fechaLimite": "2025-12-31T00:00:00Z"
+}
+
+### Crear con fecha inválida (pasada)
+POST {{host}}:{{port}}/api/tareas
+Content-Type: application/json
+
+{
+  "descripcion": "Tarea con fecha pasada",
+  "fechaLimite": "2000-01-01T00:00:00Z"
+}
+
+### Crear con descripción corta (error)
+POST {{host}}:{{port}}/api/tareas
+Content-Type: application/json
+
+{
+  "descripcion": "x",
+  "fechaLimite": "2025-12-31T00:00:00Z"
+}
+
+### Actualizar tarea completa (1)
+PUT {{host}}:{{port}}/api/tareas/1
+Content-Type: application/json
+
+{
+  "descripcion": "Descripción actualizada",
+  "fechaLimite": "2025-11-30T00:00:00Z",
+  "completada": true
+}
+
+### Actualizar solo descripción (2)
+PUT {{host}}:{{port}}/api/tareas/2
+Content-Type: application/json
+
+{
+  "descripcion": "Solo actualizar descripción"
+}
+
+### Marcar como completada (PATCH)
+PATCH {{host}}:{{port}}/api/tareas/2/completar
+
+### Eliminar tarea (3)
+DELETE {{host}}:{{port}}/api/tareas/3
