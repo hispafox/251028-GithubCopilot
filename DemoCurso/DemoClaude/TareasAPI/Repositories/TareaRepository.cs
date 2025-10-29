@@ -14,6 +14,7 @@ public class TareaRepository : ITareaRepository
         {
             Id = _nextId++,
             Descripcion = "Completar documentación del proyecto",
+            FechaInicio = DateTime.UtcNow,
             FechaLimite = DateTime.UtcNow.AddDays(5),
             Completada = false
         });
@@ -22,6 +23,7 @@ public class TareaRepository : ITareaRepository
         {
             Id = _nextId++,
             Descripcion = "Revisar código del equipo",
+            FechaInicio = DateTime.UtcNow,
             FechaLimite = DateTime.UtcNow.AddDays(2),
             Completada = false
         });
@@ -30,6 +32,7 @@ public class TareaRepository : ITareaRepository
         {
             Id = _nextId++,
             Descripcion = "Preparar presentación para cliente",
+            FechaInicio = DateTime.UtcNow,
             FechaLimite = DateTime.UtcNow.AddDays(7),
             Completada = true
         });
@@ -50,6 +53,7 @@ public class TareaRepository : ITareaRepository
     {
         tarea.Id = _nextId++;
         tarea.FechaCreacion = DateTime.UtcNow;
+        tarea.FechaInicio = tarea.FechaInicio == default ? DateTime.UtcNow : tarea.FechaInicio;
         _tareas.Add(tarea);
         return Task.FromResult(tarea);
     }
@@ -63,6 +67,11 @@ public class TareaRepository : ITareaRepository
         tarea.Descripcion = tareaActualizada.Descripcion;
         tarea.FechaLimite = tareaActualizada.FechaLimite;
         tarea.Completada = tareaActualizada.Completada;
+        // Solo actualizar FechaInicio si se proporciona un valor válido
+        if (tareaActualizada.FechaInicio != default)
+        {
+            tarea.FechaInicio = tareaActualizada.FechaInicio;
+        }
 
         return Task.FromResult<Tarea?>(tarea);
     }

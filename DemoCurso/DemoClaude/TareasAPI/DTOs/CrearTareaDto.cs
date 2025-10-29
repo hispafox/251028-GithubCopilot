@@ -10,4 +10,7 @@ public class CrearTareaDto
 
     [Required(ErrorMessage = "La fecha límite es obligatoria")]
     public DateTime FechaLimite { get; set; }
+
+    [Required(ErrorMessage = "La fecha de inicio es obligatoria")]
+    public DateTime FechaInicio { get; set; }
 }

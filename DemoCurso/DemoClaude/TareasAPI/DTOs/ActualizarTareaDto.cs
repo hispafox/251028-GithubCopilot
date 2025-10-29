@@ -10,4 +10,6 @@ public class ActualizarTareaDto
     public DateTime? FechaLimite { get; set; }
 
     public bool? Completada { get; set; }
+
+    public DateTime? FechaInicio { get; set; }
 }
