@@ -16,6 +16,7 @@ public class TareaRepository : ITareaRepository
             Descripcion = "Completar documentación del proyecto",
             FechaInicio = DateTime.UtcNow,
             FechaLimite = DateTime.UtcNow.AddDays(5),
+            FechaCreacion = DateTime.UtcNow,
             Completada = false
         });
 
@@ -25,6 +26,7 @@ public class TareaRepository : ITareaRepository
             Descripcion = "Revisar código del equipo",
             FechaInicio = DateTime.UtcNow,
             FechaLimite = DateTime.UtcNow.AddDays(2),
+            FechaCreacion = DateTime.UtcNow,
             Completada = false
         });
 
@@ -34,6 +36,7 @@ public class TareaRepository : ITareaRepository
             Descripcion = "Preparar presentación para cliente",
             FechaInicio = DateTime.UtcNow,
             FechaLimite = DateTime.UtcNow.AddDays(7),
+            FechaCreacion = DateTime.UtcNow,
             Completada = true
         });
     }
@@ -52,8 +55,8 @@ public class TareaRepository : ITareaRepository
     public Task<Tarea> CrearAsync(Tarea tarea)
     {
         tarea.Id = _nextId++;
-        tarea.FechaCreacion = DateTime.UtcNow;
-        tarea.FechaInicio = tarea.FechaInicio == default ? DateTime.UtcNow : tarea.FechaInicio;
+        // FechaCreacion ya debe estar establecida en el controlador
+        // No necesitamos validar ni modificar FechaInicio aquí, ya viene del DTO
         _tareas.Add(tarea);
         return Task.FromResult(tarea);
     }
@@ -66,12 +69,9 @@ public class TareaRepository : ITareaRepository
 
         tarea.Descripcion = tareaActualizada.Descripcion;
         tarea.FechaLimite = tareaActualizada.FechaLimite;
+        tarea.FechaInicio = tareaActualizada.FechaInicio;
         tarea.Completada = tareaActualizada.Completada;
-        // Solo actualizar FechaInicio si se proporciona un valor válido
-        if (tareaActualizada.FechaInicio != default)
-        {
-            tarea.FechaInicio = tareaActualizada.FechaInicio;
-        }
+        // FechaCreacion nunca se actualiza
 
         return Task.FromResult<Tarea?>(tarea);
     }

@@ -72,6 +72,12 @@ public class TareasController : ControllerBase
             return BadRequest(ModelState);
         }
 
+        // Validar que la fecha de inicio no sea en el pasado
+        if (tareaDto.FechaInicio.HasValue && tareaDto.FechaInicio.Value < DateTime.UtcNow)
+        {
+            return BadRequest(new { mensaje = "La fecha de inicio no puede ser en el pasado" });
+        }
+
         // Validar que la fecha límite no sea en el pasado
         if (tareaDto.FechaLimite.HasValue && tareaDto.FechaLimite.Value < DateTime.UtcNow)
         {
@@ -82,7 +88,8 @@ public class TareasController : ControllerBase
         {
             Descripcion = tareaDto.Descripcion,
             FechaLimite = tareaDto.FechaLimite!.Value,
-            FechaInicio = tareaDto.FechaInicio!.Value
+            FechaInicio = tareaDto.FechaInicio!.Value,
+            FechaCreacion = DateTime.UtcNow
         };
 
         var tareaCreada = await _repository.CrearAsync(tarea);
@@ -114,6 +121,15 @@ public class TareasController : ControllerBase
         // Actualizar solo los campos que se proporcionaron
         if (tareaDto.Descripcion != null)
             tareaExistente.Descripcion = tareaDto.Descripcion;
+
+        if (tareaDto.FechaInicio.HasValue)
+        {
+            if (tareaDto.FechaInicio.Value < DateTime.UtcNow)
+            {
+                return BadRequest(new { mensaje = "La fecha de inicio no puede ser en el pasado" });
+            }
+            tareaExistente.FechaInicio = tareaDto.FechaInicio.Value;
+        }
 
         if (tareaDto.FechaLimite.HasValue)
         {
