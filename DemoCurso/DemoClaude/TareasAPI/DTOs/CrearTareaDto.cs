@@ -1,7 +1,9 @@
 using System.ComponentModel.DataAnnotations;
+using TareasAPI.Validation;
 
 namespace TareasAPI.DTOs;
 
+[StartBeforeEnd(nameof(FechaInicio), nameof(FechaLimite))]
 public class CrearTareaDto
 {
     [Required(ErrorMessage = "La descripción es obligatoria")]
@@ -9,40 +11,11 @@ public class CrearTareaDto
     public string Descripcion { get; set; } = string.Empty;
 
     [Required(ErrorMessage = "La fecha límite es obligatoria")]
-    [FechaInicioAntesDeFechaLimite("FechaLimite")]
-    public DateTime FechaLimite { get; set; }
+    public DateTime? FechaLimite { get; set; }
 
     [Required(ErrorMessage = "La fecha de inicio es obligatoria")]
 
-    public DateTime FechaInicio { get; set; }
+    public DateTime? FechaInicio { get; set; }
 }
 
 
-// Crear un atributo de validación personalizado llamado FechaInicioAntesDeFechaLimiteAttribute
-public class FechaInicioAntesDeFechaLimiteAttribute : ValidationAttribute
-{
-    private readonly string _fechaLimitePropertyName;
-    public FechaInicioAntesDeFechaLimiteAttribute(string fechaLimitePropertyName)
-    {
-        _fechaLimitePropertyName = fechaLimitePropertyName;
-        ErrorMessage = "La fecha de inicio debe ser anterior a la fecha límite";
-    }
-    protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
-    {
-        var fechaInicio = (DateTime?)value;
-        var fechaLimiteProperty = validationContext.ObjectType.GetProperty(_fechaLimitePropertyName);
-        if (fechaLimiteProperty == null)
-        {
-            return new ValidationResult($"No se encontró la propiedad {_fechaLimitePropertyName}");
-        }
-        var fechaLimite = (DateTime?)fechaLimiteProperty.GetValue(validationContext.ObjectInstance);
-        if (fechaInicio is not null && fechaLimite is not null)
-        {
-            if (fechaInicio >= fechaLimite)
-            {
-                return new ValidationResult(ErrorMessage);
-            }
-        }
-        return ValidationResult.Success;
-    }
-}

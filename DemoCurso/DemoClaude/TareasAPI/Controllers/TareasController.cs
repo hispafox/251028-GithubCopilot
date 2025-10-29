@@ -73,7 +73,7 @@ public class TareasController : ControllerBase
         }
 
         // Validar que la fecha límite no sea en el pasado
-        if (tareaDto.FechaLimite < DateTime.UtcNow)
+        if (tareaDto.FechaLimite.HasValue && tareaDto.FechaLimite.Value < DateTime.UtcNow)
         {
             return BadRequest(new { mensaje = "La fecha límite no puede ser en el pasado" });
         }
@@ -81,7 +81,8 @@ public class TareasController : ControllerBase
         var tarea = new Tarea
         {
             Descripcion = tareaDto.Descripcion,
-            FechaLimite = tareaDto.FechaLimite
+            FechaLimite = tareaDto.FechaLimite!.Value,
+            FechaInicio = tareaDto.FechaInicio!.Value
         };
 
         var tareaCreada = await _repository.CrearAsync(tarea);
